@@ -1,13 +1,19 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const routes = require('./routes/routes');
-const uuid = require('uuid').v4;
-
 const app = express();
+const routes = require('./routes/routes');
+const bodyParser = require('body-parser');
+const uuid = require('uuid').v4;
 const PORT = 3000;
 
+  // body-parser middle ware
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
 
-// Set different properties for the app
+   // Routes
+   app.use('/', routes);
+
+
+// Set ejs template engine
 app.set('view engine', 'ejs');
 app.set('views', './views')
 
@@ -20,11 +26,11 @@ app.get('/', (req, res) => {
 })
   
 
-  // body-parser middle ware
-  app.use(bodyParser.urlencoded({ extended: true }));
 
-  // come back to this later
-  // app.use('/', routes);
+
+
+
+  
 
 
   // Listening for requests
