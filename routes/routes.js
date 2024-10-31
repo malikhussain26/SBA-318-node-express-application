@@ -5,8 +5,15 @@ const posts = require('../data-categories/posts');
 // Store tasks in an array
 const tasks = [];
 
+// Function to find a task by its ID
+function findById(id) {
+    console.log('Finding task by ID:', id);
+    return tasks.find((task) => task.id === parseInt(id));
+}
+
 // GET route to render the index page
 router.get('/', (req, res) => {
+    console.log('Tasks array:', tasks);
     res.render('index', { tasks: tasks }); // Pass the tasks aray
 });
 
@@ -30,7 +37,8 @@ router.post('/tasks', (req, res) => {
   });
 
 // PATCH or PUT route to update a task
-router.patch('/:id', (req, res) => {
+router.patch('/tasks/:id', (req, res) => {
+    console.log('Updating task with ID:', req.params.id);
     const { id } = req.params;
     const { title, content, completed} = req.body;
 
