@@ -10,7 +10,7 @@ const PORT = 3000;
   app.use(bodyParser.json());
 
    // Routes
-   app.use('/', routes);
+   app.use(routes);
 
 
 // Set ejs template engine
@@ -25,12 +25,12 @@ app.get('/', (req, res) => {
   });
 })
   
+const errorHandlerMiddleware = (err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Internal Server Error' });
+};
 
-
-
-
-
-  
+app.use(errorHandlerMiddleware);
 
 
   // Listening for requests

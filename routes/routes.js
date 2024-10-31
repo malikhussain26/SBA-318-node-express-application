@@ -1,10 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const posts = require('../data-categories/posts');
+const middleware = require('./middleware');
+
 
 
 // Store tasks in an array
-const tasks = posts;
+const tasks = [];
+// middleware to parse JSON requests
+router.use(express.json()); 
+// middleware to parse URL-encoded requests
+router.use(express.urlencoded({ extended: true })); 
 
 // Function to find a task by its ID
 function findById(id) {
@@ -12,29 +18,37 @@ function findById(id) {
     return tasks.find((task) => task.id === parseInt(id));
 }
 
+
 // GET route to render the index page
 router.get('/', (req, res) => {
     console.log('Tasks array:', tasks);
-    res.render('index', { tasks: tasks }); // Pass the tasks aray
-});
+    res.render('index', {
+      pageTitle: 'Welcome to Your To-Do List',
+      welcomeMessage: 'Add a New Task To Your To-Do List:',
+      tasks: tasks
+    });
+  }).all('*', (req, res) => {
+    res.render('index', {
+      pageTitle: 'Welcome to Your To-Do List',
+      welcomeMessage: 'Add a New Task To Your To-Do List:',
+      tasks: tasks
+    });
+  });
 
 // POST route to add a new task
-router.post('/tasks', (req, res) => {
-    console.log('Request body:', req.body);
-    const { task } = req.body;
-  
-    if (!task) {
-      return res.status(400).json({ error: 'Task is required' });
-    }
-  
+router.post('/tasks', middleware.logRequestMiddleware, middleware.validateTaskMiddleware, (req, res) => {
     const newTask = {
       id: tasks.length + 1,
-      task,
+      task: req.body.task,
       completed: false
     };
   
     tasks.push(newTask);
-    res.json({ message: 'Task added successfully', newTask });
+    res.render('index', {
+      pageTitle: 'Welcome to Your To-Do List',
+      welcomeMessage: 'Add a New Task To Your To-Do List:',
+      tasks: tasks
+    });
   });
 
 // PATCH or PUT route to update a task
@@ -54,6 +68,12 @@ router.patch('/tasks/:id', (req, res) => {
     
     res.json({ message: 'Post updated successfully' });
 })
+
+// GET route to log the tasks array
+router.get('/tasks/log', (req, res) => {
+    console.log('Tasks array:', tasks);
+    res.send('Logged tasks array to console');
+  });
 
 // DELETE route to delete a task
 router.delete('/tasks/:id', (req, res) => {
