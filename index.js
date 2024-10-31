@@ -3,6 +3,7 @@ const app = express();
 const routes = require('./routes/routes');
 const bodyParser = require('body-parser');
 const uuid = require('uuid').v4;
+app.use(express.static('assets'));
 const PORT = 3000;
 
   // body-parser middle ware

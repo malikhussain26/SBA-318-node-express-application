@@ -18,6 +18,19 @@ function findById(id) {
     return tasks.find((task) => task.id === parseInt(id));
 }
 
+// query parameter
+router.get('/posts', (req, res) => {
+    const author = req.query.author;
+    const filteredPosts = posts.filter(post => post.author === parseInt(author));
+    res.json(filteredPosts);
+  });
+
+  // route parameter
+  router.get('/posts/:id', (req, res) => {
+    const postId = req.params.id;
+    const post = posts.find(post => post.id === parseInt(postId));
+    res.json(post);
+  });
 
 // GET route to render the index page
 router.get('/', (req, res) => {
