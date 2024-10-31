@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const posts = require('../data-categories/posts');
 
+
 // Store tasks in an array
-const tasks = [];
+const tasks = posts;
 
 // Function to find a task by its ID
 function findById(id) {
@@ -55,7 +56,18 @@ router.patch('/tasks/:id', (req, res) => {
 })
 
 // DELETE route to delete a task
+router.delete('/tasks/:id', (req, res) => {
+    console.log('Deleting task with ID:', req.params.id);
+    const { id} = req.params;
 
+    const taskIndex = tasks.findIndex((task) => task.id === parseInt(id));
+    if (taskIndex === -1) {
+        return res.status(404).json({ error: `Task with ID ${id}not found`});
+    }
+
+    tasks.splice(taskIndex, 1);
+    res.json({ message: 'Task deleted successfully'});
+});
 
 
 
