@@ -4,13 +4,8 @@ const posts = require('../data-categories/posts');
 const middleware = require('./middleware');
 
 
-
 // Store tasks in an array
 const tasks = [];
-// middleware to parse JSON requests
-router.use(express.json()); 
-// middleware to parse URL-encoded requests
-router.use(express.urlencoded({ extended: true })); 
 
 // Function to find a task by its ID
 function findById(id) {
@@ -40,16 +35,12 @@ router.get('/', (req, res) => {
       welcomeMessage: 'Add a New Task To Your To-Do List:',
       tasks: tasks
     });
-  }).all('*', (req, res) => {
-    res.render('index', {
-      pageTitle: 'Welcome to Your To-Do List',
-      welcomeMessage: 'Add a New Task To Your To-Do List:',
-      tasks: tasks
-    });
   });
 
 // POST route to add a new task
-router.post('/tasks', middleware.logRequestMiddleware, middleware.validateTaskMiddleware, (req, res) => {
+router.post('/tasks', middleware.validateTaskMiddleware, (req, res) => {
+  console.log('attemtpting to post a task');
+  console.log(req.body);
     const newTask = {
       id: tasks.length + 1,
       task: req.body.task,
@@ -57,6 +48,7 @@ router.post('/tasks', middleware.logRequestMiddleware, middleware.validateTaskMi
     };
   
     tasks.push(newTask);
+
     res.render('index', {
       pageTitle: 'Welcome to Your To-Do List',
       welcomeMessage: 'Add a New Task To Your To-Do List:',
