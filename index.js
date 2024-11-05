@@ -2,29 +2,26 @@ const express = require('express');
 const app = express();
 const routes = require('./routes/routes');
 const bodyParser = require('body-parser');
-const uuid = require('uuid').v4;
-app.use(express.static('assets'));
+const { logRequestMiddleware } = require('./routes/middleware');
 const PORT = 3000;
 
-  // body-parser middle ware
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
-
-   // Routes
-   app.use(routes);
+// body-parser middle ware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static('assets'));
 
 
 // Set ejs template engine
 app.set('view engine', 'ejs');
-app.set('views', './views')
+app.set('views', './views');
+app.set('view cache', false);
+
+
+app.use(logRequestMiddleware);
 
 // Routes
-app.get('/', (req, res) => {
-  res.render('index.ejs', {
-    pageTitle: 'Welcome to Your To-Do List',
-    welcomeMessage: 'Add a New Task To Your To-Do List:',
-  });
-})
+app.use(routes);
+
   
 const errorHandlerMiddleware = (err, req, res, next) => {
   console.error(err);
@@ -34,7 +31,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
 app.use(errorHandlerMiddleware);
 
 
-  // Listening for requests
-  app.listen(PORT, () => {
+// Listening for requests
+app.listen(PORT, () => {
     console.log(`Server listening on port: ${PORT}.`);
   });
