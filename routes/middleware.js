@@ -5,6 +5,7 @@ const logRequestMiddleware = (req, res, next) => {
   };
   
   const validateTaskMiddleware = (req, res, next) => {
+    console.log('Validating request body:', req.body);
     if (!req.body.task) {
       return res.status(400).json({ error: 'Task is required' });
     }
